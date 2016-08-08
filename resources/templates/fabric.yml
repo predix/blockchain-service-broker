@@ -1,0 +1,36 @@
+---
+name: hyperledger-fabric
+director_uuid: 28539132-6d43-4e1b-bf40-f2ce032ee9f8
+stemcells:
+- alias: default
+  name: bosh-warden-boshlite-ubuntu-trusty-go_agent
+  version: latest
+releases:
+- name: fabric-release
+  version: latest
+update:
+  canaries: 1
+  canary_watch_time: 5000-120000
+  max_in_flight: 3
+  serial: false
+  update_watch_time: 5000-120000
+jobs:
+- instances: 3
+  azs: [z1, z2]
+  name: peer
+  networks:
+  - name: peer
+  persistent_disk: 1024
+  vm_type: small
+  stemcell: default
+  templates:
+  - name: peer
+    release: fabric-release
+  - name: docker
+    release: fabric-release
+properties:
+  peer:
+    network:
+      id: dev
+    consensus:
+      plugin: pbft

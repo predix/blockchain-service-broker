@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -98,11 +99,28 @@ var provisionResponse = `
 }
 `
 
+var deprovisionResponse = `
+{
+ "operation": "task10"
+}
+`
+
+var (
+	scheme       = "https"
+	boshUsername = "admin"
+	boshPassword = "admin"
+	boshAddress  = "192.168.50.4"
+	boshPort     = 25555
+)
+
+var boshDirectorUrl = fmt.Sprintf("%s://%s:%s@%s:%d", scheme, boshUsername, boshPassword, boshAddress, boshPort)
+
 func main() {
 	log.Debug("Starting fabric service broker")
 	r := mux.NewRouter()
 	r.HandleFunc("/v2/catalog", catalogHandler)
 	r.HandleFunc("/v2/service_instances/{instanceId}", provisioningHandler).Methods("PUT")
+	r.HandleFunc("/v2/service_instances/{instanceId}", deprovisioningHandler).Methods("DELETE")
 	r.HandleFunc("/v2/service_instances/{instanceId}/last_operation", lastOperationHandler)
 
 	http.ListenAndServe(":8999", r)
@@ -128,6 +146,27 @@ func provisioningHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusAccepted)
 	w.Write([]byte(provisionResponse))
+}
+
+func deprovisioningHandler(w http.ResponseWriter, r *http.Request) {
+	log.Info("Handling DELETE /v2/service_instances")
+	// vars := mux.Vars(r)
+	// instanceId := vars["instanceId"]
+
+	query := r.URL.Query()
+	async := query["accepts_incomplete"]
+	if len(async) < 1 || async[0] != "true" {
+		w.WriteHeader(422)
+		w.Write([]byte(errAsyncResponse))
+		return
+	}
+
+	// TODO: get service_id and plan_id
+	// 410 if it doesn't exist
+
+	w.WriteHeader(http.StatusAccepted)
+	w.Write([]byte(deprovisionResponse))
+
 }
 
 func lastOperationHandler(w http.ResponseWriter, r *http.Request) {
