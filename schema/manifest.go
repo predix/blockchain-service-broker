@@ -1,14 +1,51 @@
 package schema
 
 import (
-	"io/ioutil"
-
 	"gopkg.in/yaml.v2"
 
 	"github.com/op/go-logging"
 )
 
 var log = logging.MustGetLogger("manifest-schema")
+
+const defaultManifest = `
+---
+name: GIVE-ME-A-NAME
+director_uuid: REPLACE-ME
+stemcells:
+- alias: default
+  name: USE-IAAS-SPECIFIC-STEMCELL
+  version: latest
+releases:
+- name: fabric-release
+  version: latest
+update:
+  canaries: 1
+  canary_watch_time: 5000-120000
+  max_in_flight: 3
+  serial: false
+  update_watch_time: 5000-120000
+jobs:
+- instances: 3
+  azs: [z1, z2]
+  name: peer
+  networks:
+  - name: peer
+  persistent_disk: 1024
+  vm_type: small
+  stemcell: default
+  templates:
+  - name: peer
+    release: fabric-release
+  - name: docker
+    release: fabric-release
+properties:
+  peer:
+    network:
+      id: GENERATED
+    consensus:
+      plugin: pbft
+`
 
 type Manifest struct {
 	Name         string     `yaml:"name"`
@@ -65,16 +102,10 @@ type Properties struct {
 	Peer PeerProperties `yaml:"peer"`
 }
 
-func NewManifest(manifestFile string) (*Manifest, error) {
-	data, err := ioutil.ReadFile(manifestFile)
-	if err != nil {
-		log.Error("Error reading manifest file", err)
-		return nil, err
-	}
-
+func NewManifest() (*Manifest, error) {
 	manifest := Manifest{}
 
-	err = yaml.Unmarshal(data, &manifest)
+	err := yaml.Unmarshal([]byte(defaultManifest), &manifest)
 	if err != nil {
 		log.Error("Error unmarshalling manifest file", err)
 		return nil, err

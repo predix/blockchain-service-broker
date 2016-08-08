@@ -17,63 +17,30 @@ var catalogJson = `
     "id": "3D7690ED-C611-46F4-9E64-F3D2210EE194",
     "description": "Hyperledger fabric block chain service",
     "tags": ["blockchain"],
-    "max_db_per_node": 5,
     "bindable": true,
     "metadata": {
       "provider": {
-        "name": "The name"
+        "name": "Hyperledger fabric block chain"
       },
       "listing": {
-        "imageUrl": "http://example.com/cat.gif",
-        "blurb": "Add a blurb here",
-        "longDescription": "A long time ago, in a galaxy far far away..."
+        "blurb": "Hyperledger fabric",
+        "longDescription": "Hyperledger fabric block chain - permissioned block chain"
       },
-      "displayName": "The Fake Broker"
+      "displayName": "Hyperledger service broker"
     },
-    "dashboard_client": {
-      "id": "398e2f8e-XXXX-XXXX-XXXX-19a71ecbcf64",
-      "secret": "277cabb0-XXXX-XXXX-XXXX-7822c0a90e5d",
-      "redirect_uri": "http://localhost:1234"
-    },
-    "plan_updateable": true,
+    "plan_updateable": false,
     "plans": [{
-      "name": "fake-plan",
-      "id": "d3031751-XXXX-XXXX-XXXX-a42377d3320e",
-      "description": "Shared fake Server, 5tb persistent disk, 40 max concurrent connections",
-      "max_storage_tb": 5,
+      "name": "basic",
+      "id": "15175506-D9F6-4CD8-AA1E-8F0AAFB99C07",
+      "description": "Spins up 3 validating nodes in pbft based block chain",
       "metadata": {
-        "cost": 0,
+        "cost": 99,
         "bullets": [{
-          "content": "Shared fake server"
-        }, {
-          "content": "5 TB storage"
-        }, {
-          "content": "40 concurrent connections"
+          "content": "Dedicated 3 nodes block chain cluster"
         }]
       }
-    }, {
-      "name": "fake-async-plan",
-      "id": "0f4008b5-XXXX-XXXX-XXXX-dace631cd648",
-      "description": "Shared fake Server, 5tb persistent disk, 40 max concurrent connections. 100 async",
-      "max_storage_tb": 5,
-      "metadata": {
-        "cost": 0,
-        "bullets": [{
-          "content": "40 concurrent connections"
-        }]
-      }
-    }, {
-      "name": "fake-async-only-plan",
-      "id": "8d415f6a-XXXX-XXXX-XXXX-e61f3baa1c77",
-      "description": "Shared fake Server, 5tb persistent disk, 40 max concurrent connections. 100 async",
-      "max_storage_tb": 5,
-      "metadata": {
-        "cost": 0,
-        "bullets": [{
-          "content": "40 concurrent connections"
-        }]
-      }
-    }]
+    }
+    ]
   }]
 }
 `
